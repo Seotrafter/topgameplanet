@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Defenders: Monster Shooter Space Invader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel='icon' href='/src/icons/logo.png' type='image/x-icon'>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#491d88',
+                        secondary: '#43b5a0',
+                        accent: '#fa448c',
+                        light: '#ffffff'
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 6s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': {
+                                transform: 'translateY(0)'
+                            },
+                            '50%': {
+                                transform: 'translateY(-10px)'
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background-color: #0a0a0a;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(250, 68, 140, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(67, 181, 160, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(73, 29, 136, 0.05) 0%, transparent 70%);
+            overflow-x: hidden;
+        }
+
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(73, 29, 136, 0.8) 0%, rgba(250, 68, 140, 0.4) 100%);
+        }
+
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .space-dots {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .hexagon-btn {
+            clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+        }
+    </style>
+</head>
+
+<body class="text-white">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-black bg-opacity-80 backdrop-blur-md border-b border-primary/30">
+        <div class="container mx-auto px-4 py-3 flex flex-wrap items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center animate-pulse-slow">
+                    <i class="fas fa-rocket text-white text-xl transform -rotate-45"></i>
+                </div>
+                <span class="game-title text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-secondary to-accent">GALAXY DEFENDERS</span>
+            </a>
+
+            <!-- Mobile menu button -->
+            <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+
+            <!-- Navigation -->
+            <nav id="navbar" class="hidden md:flex w-full md:w-auto mt-4 md:mt-0">
+                <ul class="flex flex-col md:flex-row md:space-x-6 space-y-2 md:space-y-0 w-full md:w-auto">
+                    <li><a href="/#features" class="block py-2 hover:text-accent transition-colors">Features</a></li>
+                    <li><a href="/#gameplay" class="block py-2 hover:text-accent transition-colors">Gameplay</a></li>
+                    <li><a href="/#ships" class="block py-2 hover:text-accent transition-colors">Ships</a></li>
+                    <li><a href="/#monsters" class="block py-2 hover:text-accent transition-colors">Monsters</a></li>
+                    <li><a href="/#download" class="block py-2 hover:text-accent transition-colors">Download</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="py-20 bg-black relative">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-1/4 right-1/3 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/3 left-1/4 w-80 h-80 bg-accent/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10 max-w-4xl">
+            <div class="text-center mb-16">
+                <h1 class="game-title text-3xl md:text-5xl font-bold mb-4">TERMS AND <span class="text-accent">CONDITIONS</span></h1>
+                <p class="max-w-3xl mx-auto text-gray-300">For Galaxy Defenders</p>
+            </div>
+
+            <div class="bg-black/50 rounded-2xl p-8 border border-primary/30 mb-10">
+                <div class="prose prose-lg prose-invert max-w-none">
+                    <p class="text-gray-300 mb-6">
+                        Welcome to GALAXY DEFENDERS!
+                    </p>
+                    <p class="text-gray-300 mb-6">
+                        These terms and conditions outline the rules and regulations for the use of GALAXY DEFENDERS's Website, located at https://topgameplanet.com/.
+                    </p>
+                    <p class="text-gray-300 mb-6">
+                        By accessing this website, we assume you accept these terms and conditions. Do not continue to use GALAXY DEFENDERS if you do not agree to take all of the terms and conditions stated on this page.
+                    </p>
+
+                    <h2 class="game-title text-2xl font-bold mt-10 mb-4 text-secondary">Terminology</h2>
+                    <p class="text-gray-300 mb-6">
+                        The following terminology applies to these Terms and Conditions, Privacy Statement, and Disclaimer Notice and all Agreements:
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 text-gray-300">
+                        <li class="mb-2">"Client", "You" and "Your" refers to you, the person logging on to this website and complying with the Company's terms and conditions.</li>
+                        <li class="mb-2">"The Company", "Ourselves", "We", "Our", and "Us" refers to our Company.</li>
+                        <li class="mb-2">"Party", "Parties", or "Us" refers to both the Client and ourselves.</li>
+                    </ul>
+                    <p class="text-gray-300 mb-6">
+                        All terms refer to the offer, acceptance, and consideration of payment necessary to undertake the process of our assistance to the Client in the most appropriate manner for the express purpose of meeting the Client's needs in respect of the provision of the Company's stated services, in accordance with and subject to the prevailing law of the Netherlands. Any use of the above terminology or other words in the singular, plural, capitalization, and/or he/she or they are taken as interchangeable and therefore as referring to the same.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-20 bg-gradient-to-b from-black to-primary/30 relative">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-0 right-0 w-full h-20 bg-accent/5"></div>
+            <div class="absolute bottom-0 left-0 w-full h-20 bg-secondary/5"></div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10 max-w-4xl">
+            <div class="bg-black/50 rounded-2xl p-8 border border-accent/30 mb-10">
+                <div class="prose prose-lg prose-invert max-w-none">
+                    <h2 class="game-title text-2xl font-bold mt-4 mb-4 text-accent">Cookies</h2>
+                    <p class="text-gray-300 mb-6">
+                        We employ the use of cookies. By accessing GALAXY DEFENDERS, you agreed to use cookies in agreement with GALAXY DEFENDERS's Privacy Policy.
+                    </p>
+                    <p class="text-gray-300 mb-6">
+                        Most interactive websites use cookies to let us retrieve the user's details for each visit. Cookies are used by our website to enable the functionality of certain areas to make it easier for people visiting our website. Some of our affiliate/advertising partners may also use cookies.
+                    </p>
+
+                    <h2 class="game-title text-2xl font-bold mt-10 mb-4 text-accent">License</h2>
+                    <p class="text-gray-300 mb-6">
+                        Unless otherwise stated, GALAXY DEFENDERS and/or its licensors own the intellectual property rights for all material on GALAXY DEFENDERS. All intellectual property rights are reserved. You may access this from GALAXY DEFENDERS for your own personal use subject to the restrictions set in these terms and conditions.
+                    </p>
+                    <p class="text-gray-300 mb-6">
+                        You must not:
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 text-gray-300">
+                        <li class="mb-2">Republish material from GALAXY DEFENDERS</li>
+                        <li class="mb-2">Sell, rent, or sub-license material from GALAXY DEFENDERS</li>
+                        <li class="mb-2">Reproduce, duplicate, or copy material from GALAXY DEFENDERS</li>
+                        <li class="mb-2">Redistribute content from GALAXY DEFENDERS</li>
+                    </ul>
+                    <p class="text-gray-300 mb-6">
+                        This Agreement shall begin on the date hereof.
+                    </p>
+                    <p class="text-gray-300 mb-6">
+                        Parts of this website offer an opportunity for users to post and exchange opinions and information in certain areas of the website. GALAXY DEFENDERS does not filter, edit, publish, or review Comments prior to their presence on the website. Comments do not reflect the views and opinions of GALAXY DEFENDERS, its agents, and/or affiliates. Comments reflect the views and opinions of the person who posts them. To the extent permitted by applicable laws, GALAXY DEFENDERS shall not be liable for the Comments or for any liability, damages, or expenses caused and/or suffered as a result of any use of and/or posting of and/or appearance of the Comments on this website.
+                    </p>
+                    <p class="text-gray-300 mb-6">
+                        GALAXY DEFENDERS reserves the right to monitor all Comments and to remove any Comments which can be considered inappropriate, offensive, or cause a breach of these Terms and Conditions.
+                    </p>
+                    <p class="text-gray-300 mb-6">
+                        You warrant and represent that:
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 text-gray-300">
+                        <li class="mb-2">You are entitled to post the Comments on our website and have all necessary licenses and consents to do so;</li>
+                        <li class="mb-2">The Comments do not invade any intellectual property rights, including, without limitation, copyright, patent, or trademark of any third party;</li>
+                        <li class="mb-2">The Comments do not contain any defamatory, libelous, offensive, indecent, or otherwise unlawful material that is an invasion of privacy;</li>
+                        <li class="mb-2">The Comments will not be used to solicit or promote business, custom, or present commercial activities or unlawful activity.</li>
+                    </ul>
+                    <p class="text-gray-300 mb-6">
+                        You hereby grant GALAXY DEFENDERS a non-exclusive license to use, reproduce, edit, and authorize others to use, reproduce, and edit any of your Comments in any and all forms, formats, or media.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-20 relative">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-1/3 right-10 w-32 h-32 bg-secondary/20 rounded-full blur-xl"></div>
+            <div class="absolute bottom-1/4 left-1/3 w-40 h-40 bg-accent/20 rounded-full blur-xl"></div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10 max-w-4xl">
+            <div class="bg-black/50 rounded-2xl p-8 border border-secondary/30 mb-10">
+                <div class="prose prose-lg prose-invert max-w-none">
+                    <h2 class="game-title text-2xl font-bold mt-4 mb-4 text-secondary">Hyperlinking to our Content</h2>
+                    <p class="text-gray-300 mb-6">
+                        The following organizations may link to our Website without prior written approval:
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 text-gray-300">
+                        <li class="mb-2">Government agencies</li>
+                        <li class="mb-2">Search engines</li>
+                        <li class="mb-2">News organizations</li>
+                        <li class="mb-2">Online directory distributors may link to our Website in the same manner as they hyperlink to the Websites of other listed businesses</li>
+                        <li class="mb-2">System-wide Accredited Businesses except soliciting non-profit organizations, charity shopping malls, and charity fundraising groups, which may not hyperlink to our Website</li>
+                    </ul>
+                    <p class="text-gray-300 mb-6">
+                        These organizations may link to our home page, to publications, or to other Website information so long as the link:
+                        (a) is not in any way deceptive;
+                        (b) does not falsely imply sponsorship, endorsement, or approval of the linking party and its products and/or services; and
+                        (c) fits within the context of the linking party's site.
+                    </p>
+                    <p class="text-gray-300 mb-6">
+                        We may consider and approve other link requests from the following types of organizations:
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 text-gray-300">
+                        <li class="mb-2">Commonly-known consumer and/or business information sources</li>
+                        <li class="mb-2">Dot.com community sites</li>
+                        <li class="mb-2">Associations or other groups representing charities</li>
+                        <li class="mb-2">Online directory distributors</li>
+                        <li class="mb-2">Internet portals</li>
+                        <li class="mb-2">Accounting, law, and consulting firms</li>
+                        <li class="mb-2">Educational institutions and trade associations</li>
+                    </ul>
+                    <p class="text-gray-300 mb-6">
+                        If you are one of the organizations listed above and are interested in linking to our website, you must inform us by sending an e-mail to GALAXY DEFENDERS. Please include your name, organization name, contact information, and the URL of your site. Wait 2-3 weeks for a response.
+                    </p>
+
+                    <h2 class="game-title text-2xl font-bold mt-10 mb-4 text-secondary">Content Liability</h2>
+                    <p class="text-gray-300 mb-6">
+                        We shall not be held responsible for any content that appears on your website. You agree to protect and defend us against all claims arising from your website. No link(s) should appear on any website that may be interpreted as libelous, obscene, criminal, or which infringes, otherwise violates, or advocates the infringement or other violation of any third-party rights.
+                    </p>
+
+                    <h2 class="game-title text-2xl font-bold mt-10 mb-4 text-secondary">Reservation of Rights</h2>
+                    <p class="text-gray-300 mb-6">
+                        We reserve the right to request that you remove all links or any particular link to our Website. You approve of the immediate removal of all links to our Website upon request. We also reserve the right to amend these terms and conditions and our linking policy at any time.
+                    </p>
+
+                    <h2 class="game-title text-2xl font-bold mt-10 mb-4 text-secondary">Disclaimer</h2>
+                    <p class="text-gray-300 mb-6">
+                        To the maximum extent permitted by applicable law, we exclude all representations, warranties, and conditions relating to our website and the use of this website. Nothing in this disclaimer will:
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 text-gray-300">
+                        <li class="mb-2">Limit or exclude our or your liability for death or personal injury</li>
+                        <li class="mb-2">Limit or exclude our or your liability for fraud or fraudulent misrepresentation</li>
+                        <li class="mb-2">Limit any of our or your liabilities in any way that is not permitted under applicable law</li>
+                        <li class="mb-2">Exclude any of our or your liabilities that may not be excluded under applicable law</li>
+                    </ul>
+                    <p class="text-gray-300 mb-6">
+                        As long as the website and the information and services on the website are provided free of charge, we will not be liable for any loss or damage of any nature.
+                    </p>
+
+                    <div class="mt-12 text-center">
+                        <a href="/" class="hexagon-btn inline-block bg-accent hover:bg-accent/80 text-white font-bold py-3 px-8 transition-all transform hover:scale-105">
+                            <i class="fas fa-home mr-2"></i> Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="bg-black pt-16 pb-8 border-t border-primary/30 relative">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <a href="/" class="flex items-center space-x-3 mb-6 md:mb-0">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                        <i class="fas fa-rocket text-white text-xl transform -rotate-45"></i>
+                    </div>
+                    <span class="game-title text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-secondary to-accent">GALAXY DEFENDERS</span>
+                </a>
+
+                <nav class="flex flex-wrap justify-center gap-x-8 gap-y-2">
+                    <a href="/#features" class="text-gray-300 hover:text-accent transition-colors">Features</a>
+                    <a href="/#gameplay" class="text-gray-300 hover:text-accent transition-colors">Gameplay</a>
+                    <a href="/#ships" class="text-gray-300 hover:text-accent transition-colors">Ships</a>
+                    <a href="/#monsters" class="text-gray-300 hover:text-accent transition-colors">Monsters</a>
+                    <a href="/#download" class="text-gray-300 hover:text-accent transition-colors">Download</a>
+                </nav>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-sm text-gray-500 mb-4 md:mb-0">© 2025 Galaxy Defenders. All rights reserved.</div>
+                <div class="flex space-x-6">
+                    <a href="/poliprivacy725/" class="text-sm text-gray-500 hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="/service2465/" class="text-sm text-gray-500 hover:text-white transition-colors">Terms of Use</a>
+                    <a href="/cookiess367/" class="text-sm text-gray-500 hover:text-white transition-colors">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const navbar = document.getElementById('navbar');
+            if (navbar.classList.contains('hidden')) {
+                navbar.classList.remove('hidden');
+            } else {
+                navbar.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
+<?php
+$cookieConsentHtml = '
+<style>
+.cookie-consent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: rgba(73, 29, 136, 0.9); /* Primary color with opacity */
+    backdrop-filter: blur(10px);
+    box-shadow: 0 -2px 15px rgba(73, 29, 136, 0.4); /* Shadow with primary color */
+    width: 100%;
+    transform: translateY(100%);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cookie-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    position: relative;
+    font-family: "Exo 2", sans-serif;
+}
+
+.cookie-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to right,
+        rgba(250, 68, 140, 0.1), /* Gradient with accent color */
+        rgba(67, 181, 160, 0.05) /* Gradient with secondary color */
+    );
+    pointer-events: none;
+}
+
+.cookie-content {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.cookie-title {
+    font-size: 1.2rem;
+    color: #ffffff; 
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-right: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: "Orbitron", sans-serif;
+}
+
+.cookie-title i {
+    color: #fa448c; /* Accent color for icon */
+    font-size: 1.5rem;
+}
+
+.cookie-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    margin: 0;
+    line-height: 1.5;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    font-family: "Exo 2", sans-serif;
+}
+
+.cookie-link {
+    color: #43b5a0; /* Secondary color for links */
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.cookie-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #43b5a0; /* Secondary color for underline */
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.cookie-link:hover::after {
+    transform: scaleX(1);
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.cookie-button-reject,
+.cookie-button-accept {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    font-family: "Orbitron", sans-serif;
+    border-radius: 0.75rem; /* Rounded corners matching site buttons */
+}
+
+.cookie-button-reject {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cookie-button-reject:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.cookie-button-accept {
+    background: #fa448c; /* Accent color */
+    color: #ffffff;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%); /* Hexagon shape matching site buttons */
+}
+
+.cookie-button-accept::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(67, 181, 160, 0.3), /* Secondary color for shine effect */
+        transparent
+    );
+    transition: all 0.6s;
+}
+
+.cookie-button-accept:hover {
+    background: rgba(250, 68, 140, 0.9); /* Lighter accent color on hover */
+    transform: translateY(-2px);
+}
+
+.cookie-button-accept:hover::before {
+    left: 100%;
+}
+
+@media (max-width: 768px) {
+    .cookie-container {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .cookie-content {
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .cookie-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .cookie-button-reject,
+    .cookie-button-accept {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .cookie-title {
+        margin-right: 0;
+        justify-content: center;
+    }
+}
+</style>
+<div id="cookieConsent" class="cookie-consent">
+    <div class="cookie-container">
+        <div class="cookie-content">
+            <h3 class="cookie-title">
+                <i class="fas fa-cookie-bite"></i>
+                Cookie Policy
+            </h3>
+            <p class="cookie-text ">
+                At Galaxy Defenders we use cookies to improve your gaming experience. By continuing to use our website, you accept our use of cookies. For more information, please read our
+                <a href="/poliprivacy725/" class="cookie-link">Privacy Policy</a>,
+                the
+                <a href="/service2465/" class="cookie-link">Terms of Service</a>
+                and the
+                <a href="/cookiess367/" class="cookie-link">Cookie Policy</a>.
+            </p>
+        </div>
+        
+        <div class="cookie-buttons">
+            <button id="rejectCookies" class="cookie-button-reject">
+                Decline
+            </button>
+            <button id="acceptCookies" class="cookie-button-accept">
+                Accept
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+   const cookieConsent = document.getElementById("cookieConsent");
+   const acceptBtn = document.getElementById("acceptCookies");
+   const rejectBtn = document.getElementById("rejectCookies");
+   
+   if (!getCookie("aprenderd_cookie_consent")) {
+       setTimeout(() => {
+           cookieConsent.style.transform = "translateY(0)";
+       }, 1000);
+   }
+
+   function getCookie(name) {
+       let matches = document.cookie.match(new RegExp(
+           "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"
+       ));
+       return matches ? decodeURIComponent(matches[1]) : undefined;
+   }
+   
+   function setCookie(name, value, days) {
+       const date = new Date();
+       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+       const expires = "; expires=" + date.toUTCString();
+       document.cookie = name + "=" + value + expires + "; path=/; SameSite=Strict; Secure";
+   }
+
+   function handleConsent(consent) {
+       setCookie("aprenderd_cookie_consent", consent, 365);
+       cookieConsent.style.transform = "translateY(100%)";
+       
+       setTimeout(() => {
+           cookieConsent.remove();
+       }, 500);
+   }
+
+   acceptBtn.addEventListener("click", () => handleConsent("accepted"));
+   rejectBtn.addEventListener("click", () => handleConsent("rejected"));
+});
+</script>
+';
+
+if (!isset($_COOKIE["aprenderd_cookie_consent"])) {
+    echo $cookieConsentHtml;
+}
+?>

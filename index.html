@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Defenders: Monster Shooter Space Invader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel='icon' href='/src/icons/logo.png' type='image/x-icon'>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#491d88',
+                        secondary: '#43b5a0',
+                        accent: '#fa448c',
+                        light: '#ffffff'
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 6s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': {
+                                transform: 'translateY(0)'
+                            },
+                            '50%': {
+                                transform: 'translateY(-10px)'
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background-color: #0a0a0a;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(250, 68, 140, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(67, 181, 160, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(73, 29, 136, 0.05) 0%, transparent 70%);
+            overflow-x: hidden;
+        }
+
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(73, 29, 136, 0.8) 0%, rgba(250, 68, 140, 0.4) 100%);
+        }
+
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .space-dots {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .hexagon-btn {
+            clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+        }
+    </style>
+</head>
+
+<body class="text-white">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-black bg-opacity-80 backdrop-blur-md border-b border-primary/30">
+        <div class="container mx-auto px-4 py-3 flex flex-wrap items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center animate-pulse-slow">
+                    <i class="fas fa-rocket text-white text-xl transform -rotate-45"></i>
+                </div>
+                <span class="game-title text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-secondary to-accent">GALAXY DEFENDERS</span>
+            </a>
+
+            <!-- Mobile menu button -->
+            <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+
+            <!-- Navigation -->
+            <nav id="navbar" class="hidden md:flex w-full md:w-auto mt-4 md:mt-0">
+                <ul class="flex flex-col md:flex-row md:space-x-6 space-y-2 md:space-y-0 w-full md:w-auto">
+                    <li><a href="#features" class="block py-2 hover:text-accent transition-colors">Features</a></li>
+                    <li><a href="#gameplay" class="block py-2 hover:text-accent transition-colors">Gameplay</a></li>
+                    <li><a href="#ships" class="block py-2 hover:text-accent transition-colors">Ships</a></li>
+                    <li><a href="#monsters" class="block py-2 hover:text-accent transition-colors">Monsters</a></li>
+                    <li><a href="#download" class="block py-2 hover:text-accent transition-colors">Download</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center relative overflow-hidden space-dots">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-20 right-20 w-20 h-20 bg-accent rounded-full opacity-20 animate-pulse-slow"></div>
+            <div class="absolute bottom-40 left-10 w-32 h-32 bg-secondary rounded-full opacity-10 animate-float"></div>
+            <div class="absolute top-1/3 left-1/4 w-16 h-16 bg-primary rounded-full opacity-30 animate-spin-slow"></div>
+        </div>
+
+        <div class="container mx-auto px-4 py-20 relative z-10">
+            <div class="flex flex-col-reverse md:flex-row items-center justify-between gap-12">
+                <div class="md:w-1/2 space-y-6">
+                    <h1 class="game-title text-4xl md:text-6xl font-black text-white leading-tight">
+                        DEFEND THE <span class="text-accent">GALAXY</span>. DESTROY THE <span class="text-secondary">INVADERS</span>.
+                    </h1>
+                    <p class="text-lg md:text-xl font-light leading-relaxed">
+                        Monsters are emerging from cosmic black holes, traveling to invade planets across galaxies. They're getting closer to Earth. Join the cosmic fleet defending Earth and the Universe in this action-packed space shooter adventure.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <a href="#download" class="hexagon-btn bg-accent hover:bg-accent/80 text-white font-bold py-3 px-8 transition-all transform hover:scale-105">
+                            <i class="fas fa-download mr-2"></i> Download Now
+                        </a>
+                        <a href="#gameplay" class="hexagon-btn bg-primary/70 hover:bg-primary text-white font-bold py-3 px-8 transition-all transform hover:scale-105">
+                            <i class="fas fa-play mr-2"></i> See Gameplay
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative w-64 h-64 md:w-96 md:h-96 animate-float">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-primary via-accent to-secondary rounded-full opacity-20 animate-pulse-slow"></div>
+                        <div class="absolute inset-4 bg-gradient-to-br from-accent/80 to-primary/80 rounded-full border-4 border-white/10 flex items-center justify-center shadow-xl">
+                            <i class="fas fa-rocket text-white text-7xl md:text-8xl transform -rotate-45"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black to-transparent"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 relative">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-1/4 right-1/3 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/3 left-1/4 w-80 h-80 bg-accent/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="game-title text-3xl md:text-5xl font-bold mb-4">GAME <span class="text-accent">FEATURES</span></h2>
+                <p class="max-w-3xl mx-auto text-gray-300">An epic space adventure with modern battles and diverse game modes awaits you in the galaxy.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-gradient-to-br from-black to-primary/20 p-6 rounded-2xl border border-primary/30 transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/20">
+                    <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-6">
+                        <i class="fas fa-bolt text-accent text-2xl"></i>
+                    </div>
+                    <h3 class="game-title text-xl font-bold mb-3">Special Attack Mode</h3>
+                    <p class="text-gray-300">Activate a special attack mode after each hand release for devastating firepower against invaders.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-gradient-to-br from-black to-secondary/20 p-6 rounded-2xl border border-secondary/30 transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-secondary/20">
+                    <div class="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center mb-6">
+                        <i class="fas fa-ghost text-secondary text-2xl"></i>
+                    </div>
+                    <h3 class="game-title text-xl font-bold mb-3">Unique Monsters</h3>
+                    <p class="text-gray-300">Face off against a variety of unique monsters, each with their own special attacks and dangers.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-gradient-to-br from-black to-accent/20 p-6 rounded-2xl border border-accent/30 transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent/20">
+                    <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-6">
+                        <i class="fas fa-space-shuttle text-accent text-2xl"></i>
+                    </div>
+                    <h3 class="game-title text-xl font-bold mb-3">Multiple Spaceships</h3>
+                    <p class="text-gray-300">Choose from various war ships, each with unique designs and equipment to combat different enemy types.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-gradient-to-br from-black to-primary/20 p-6 rounded-2xl border border-primary/30 transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/20">
+                    <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6">
+                        <i class="fas fa-robot text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="game-title text-xl font-bold mb-3">Helper Ships</h3>
+                    <p class="text-gray-300">Two assistant ships aid your main spacecraft, significantly increasing your attack capabilities.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="bg-gradient-to-br from-black to-secondary/20 p-6 rounded-2xl border border-secondary/30 transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-secondary/20">
+                    <div class="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center mb-6">
+                        <i class="fas fa-cogs text-secondary text-2xl"></i>
+                    </div>
+                    <h3 class="game-title text-xl font-bold mb-3">Ship Upgrades</h3>
+                    <p class="text-gray-300">Enhance your battle ships with various equipment to boost combat capabilities against the alien threat.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="bg-gradient-to-br from-black to-accent/20 p-6 rounded-2xl border border-accent/30 transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent/20">
+                    <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-6">
+                        <i class="fas fa-trophy text-accent text-2xl"></i>
+                    </div>
+                    <h3 class="game-title text-xl font-bold mb-3">Missions & Rewards</h3>
+                    <p class="text-gray-300">Complete various tasks and missions to earn attractive rewards to power up your fleet.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gameplay Section -->
+    <section id="gameplay" class="py-20 bg-gradient-to-b from-black to-primary/30 relative">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-0 right-0 w-full h-20 bg-accent/5"></div>
+            <div class="absolute bottom-0 left-0 w-full h-20 bg-secondary/5"></div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-gradient-to-tr from-primary via-accent to-secondary rounded-2xl opacity-30 blur-xl"></div>
+                        <a href="https://youtu.be/THxFzqnsbH8" target="_blank">
+                            <div class="relative aspect-video rounded-2xl bg-black/80 border-2 border-white/20 overflow-hidden flex items-center justify-center">
+                                <img src="/src/img/gameplay.png" alt="Monster Shooter Gameplay" class="w-full h-full object-cover opacity-60" />
+                                <i class="fas fa-gamepad text-9xl text-white/20 absolute"></i>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="hexagon-btn bg-accent/90 text-white py-3 px-6 font-bold">
+                                        <i class="fas fa-play mr-2"></i> Watch Gameplay
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="absolute -bottom-6 -right-6 w-20 h-20 bg-secondary rounded-full opacity-20 animate-float"></div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 space-y-6">
+                    <h2 class="game-title text-3xl md:text-5xl font-bold mb-4">HOW TO <span class="text-secondary">PLAY</span></h2>
+                    <p class="text-lg leading-relaxed">
+                        Touch the screen and move to avoid enemy attacks, shoot back and destroy them to save the galaxy. Simple gameplay suitable for all ages with increasingly challenging levels.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <div class="mt-1 mr-4 w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-hand-pointer text-accent"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Touch & Move</h4>
+                                <p class="text-gray-300">Navigate your ship across the screen to dodge incoming enemy fire</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="mt-1 mr-4 w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-crosshairs text-secondary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Auto-Fire</h4>
+                                <p class="text-gray-300">Your ship automatically fires - focus on positioning and strategy</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="mt-1 mr-4 w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-bomb text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Special Attacks</h4>
+                                <p class="text-gray-300">Tap to activate devastating special attacks when your power meter is full</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="pt-4">
+                        <a href="#download" class="hexagon-btn inline-block bg-secondary hover:bg-secondary/80 text-white font-bold py-3 px-8 transition-all transform hover:scale-105">
+                            Try It Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ships Section -->
+    <section id="ships" class="py-20 relative">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-1/3 right-10 w-32 h-32 bg-secondary/20 rounded-full blur-xl"></div>
+            <div class="absolute bottom-1/4 left-1/3 w-40 h-40 bg-accent/20 rounded-full blur-xl"></div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="game-title text-3xl md:text-5xl font-bold mb-4">BATTLE <span class="text-primary">SHIPS</span></h2>
+                <p class="max-w-3xl mx-auto text-gray-300">Build your fleet of space ships and defend Earth from hordes of alien monsters.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Ship 1 -->
+                <div class="bg-black/50 rounded-2xl p-6 border border-white/10 transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/20 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-b from-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative">
+                        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent/50 mx-auto mb-6 flex items-center justify-center">
+                            <i class="fas fa-fighter-jet text-white text-3xl transform -rotate-45"></i>
+                        </div>
+                        <h3 class="game-title text-xl font-bold mb-3 text-center">THUNDER HAWK</h3>
+                        <div class="space-y-3 text-center">
+                            <div class="flex justify-center space-x-1">
+                                <span class="w-4 h-4 bg-accent rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent/30 rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent/30 rounded-full"></span>
+                            </div>
+                            <p class="text-sm text-gray-300">SPEED</p>
+                        </div>
+                        <div class="space-y-3 mt-4 text-center">
+                            <div class="flex justify-center space-x-1">
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary/30 rounded-full"></span>
+                            </div>
+                            <p class="text-sm text-gray-300">FIREPOWER</p>
+                        </div>
+                        <div class="mt-6 text-center">
+                            <span class="inline-block bg-primary/30 text-white text-sm py-1 px-4 rounded-full">BALANCED</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ship 2 -->
+                <div class="bg-black/50 rounded-2xl p-6 border border-white/10 transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-secondary/20 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-b from-secondary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative">
+                        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-secondary to-primary/50 mx-auto mb-6 flex items-center justify-center">
+                            <i class="fas fa-space-shuttle text-white text-3xl"></i>
+                        </div>
+                        <h3 class="game-title text-xl font-bold mb-3 text-center">NOVA STRIKER</h3>
+                        <div class="space-y-3 text-center">
+                            <div class="flex justify-center space-x-1">
+                                <span class="w-4 h-4 bg-accent rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent/30 rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent/30 rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent/30 rounded-full"></span>
+                            </div>
+                            <p class="text-sm text-gray-300">SPEED</p>
+                        </div>
+                        <div class="space-y-3 mt-4 text-center">
+                            <div class="flex justify-center space-x-1">
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                            </div>
+                            <p class="text-sm text-gray-300">FIREPOWER</p>
+                        </div>
+                        <div class="mt-6 text-center">
+                            <span class="inline-block bg-secondary/30 text-white text-sm py-1 px-4 rounded-full">HEAVY DAMAGE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ship 3 -->
+                <div class="bg-black/50 rounded-2xl p-6 border border-white/10 transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent/20 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-b from-accent/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative">
+                        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-accent to-secondary/50 mx-auto mb-6 flex items-center justify-center">
+                            <i class="fas fa-rocket text-white text-3xl transform -rotate-45"></i>
+                        </div>
+                        <h3 class="game-title text-xl font-bold mb-3 text-center">PHANTOM X</h3>
+                        <div class="space-y-3 text-center">
+                            <div class="flex justify-center space-x-1">
+                                <span class="w-4 h-4 bg-accent rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent rounded-full"></span>
+                                <span class="w-4 h-4 bg-accent rounded-full"></span>
+                            </div>
+                            <p class="text-sm text-gray-300">SPEED</p>
+                        </div>
+                        <div class="space-y-3 mt-4 text-center">
+                            <div class="flex justify-center space-x-1">
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary/30 rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary/30 rounded-full"></span>
+                                <span class="w-4 h-4 bg-secondary/30 rounded-full"></span>
+                            </div>
+                            <p class="text-sm text-gray-300">FIREPOWER</p>
+                        </div>
+                        <div class="mt-6 text-center">
+                            <span class="inline-block bg-accent/30 text-white text-sm py-1 px-4 rounded-full">ULTRA FAST</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Monsters Section -->
+    <section id="monsters" class="py-20 bg-gradient-to-b from-black to-accent/20 relative">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-20 bg-primary/5"></div>
+            <div class="absolute bottom-0 right-0 w-full h-20 bg-accent/5"></div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="game-title text-3xl md:text-5xl font-bold mb-4">ENEMY <span class="text-accent">MONSTERS</span></h2>
+                <p class="max-w-3xl mx-auto text-gray-300">Many unique monsters with their own dangers threaten the galaxy. Can you defeat them all?</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 space-y-8">
+                    <!-- Monster 1 -->
+                    <div class="bg-black/50 rounded-xl p-4 border border-accent/30 flex items-center transform transition-all hover:scale-105">
+                        <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mr-4 animate-pulse-slow">
+                            <i class="fas fa-skull text-accent text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="game-title text-lg font-bold text-white">VOID REAPERS</h3>
+                            <p class="text-sm text-gray-300">Fast-moving stealth attackers that appear suddenly from hyperspace.</p>
+                        </div>
+                    </div>
+
+                    <!-- Monster 2 -->
+                    <div class="bg-black/50 rounded-xl p-4 border border-primary/30 flex items-center transform transition-all hover:scale-105">
+                        <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mr-4 animate-pulse-slow">
+                            <i class="fas fa-radiation text-primary text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="game-title text-lg font-bold text-white">QUANTUM DEVOURERS</h3>
+                            <p class="text-sm text-gray-300">Energy-absorbing entities that can disable your weapons systems.</p>
+                        </div>
+                    </div>
+
+                    <!-- Monster 3 -->
+                    <div class="bg-black/50 rounded-xl p-4 border border-secondary/30 flex items-center transform transition-all hover:scale-105">
+                        <div class="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center mr-4 animate-pulse-slow">
+                            <i class="fas fa-virus text-secondary text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="game-title text-lg font-bold text-white">NEBULA SWARMERS</h3>
+                            <p class="text-sm text-gray-300">Small but numerous enemies that attack in coordinated patterns.</p>
+                        </div>
+                    </div>
+
+                    <!-- Boss -->
+                    <div class="bg-gradient-to-r from-primary/30 via-accent/30 to-secondary/30 rounded-xl p-4 border border-white/30 flex items-center transform transition-all hover:scale-105">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary via-accent to-secondary flex items-center justify-center mr-4 animate-pulse-slow">
+                            <i class="fas fa-dragon text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="game-title text-lg font-bold text-white">GALACTIC OVERLORD</h3>
+                            <p class="text-sm text-gray-300">Final boss with multiple attack phases and devastating weapons.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:w-1/2">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-gradient-to-tr from-accent via-primary to-secondary rounded-2xl opacity-30 blur-xl"></div>
+                        <div class="relative aspect-square rounded-2xl bg-black/80 border-2 border-accent/30 overflow-hidden flex items-center justify-center animate-float">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-full h-full rounded-full bg-gradient-to-br from-accent/50 to-primary/50 animate-pulse-slow flex items-center justify-center overflow-hidden">
+                                    <img src="/src/img/enemy.png" alt="Alien monster" class="w-full h-full object-cover mix-blend-overlay opacity-80" />
+                                    <i class="fas fa-virus-alien text-white text-6xl absolute"></i>
+                                </div>
+                            </div>
+                            <div class="absolute top-6 left-6 w-10 h-10 rounded-full bg-secondary/50 animate-float"></div>
+                            <div class="absolute bottom-10 right-12 w-8 h-8 rounded-full bg-accent/50 animate-pulse-slow"></div>
+                            <div class="absolute top-1/2 right-8 w-6 h-6 rounded-full bg-primary/50 animate-spin-slow"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="py-20 relative">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-1/4 left-10 w-32 h-32 bg-primary/20 rounded-full blur-xl"></div>
+            <div class="absolute bottom-1/4 right-10 w-40 h-40 bg-accent/20 rounded-full blur-xl"></div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto bg-gradient-to-br from-black via-primary/30 to-black rounded-3xl p-8 md:p-12 border border-white/10 text-center">
+                <h2 class="game-title text-3xl md:text-5xl font-bold mb-6">DOWNLOAD <span class="text-secondary">NOW</span></h2>
+                <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+                    The last hope of the universe is in your hands. Build your fleet of spaceships and defend Earth from hordes of alien monsters!
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-6">
+                    <!-- App Store -->
+                    <a href="https://apps.apple.com/ua/app/monster-shooter-space-invader/id6443534768?l" target="_blank" class="flex items-center bg-black hover:bg-gray-900 text-white py-3 px-6 rounded-xl border border-white/20 transition-all transform hover:scale-105">
+                        <i class="fab fa-apple text-3xl mr-3"></i>
+                        <div class="text-left">
+                            <div class="text-xs">Download on the</div>
+                            <div class="text-xl font-bold">App Store</div>
+                        </div>
+                    </a>
+
+                    <!-- Google Play -->
+                    <a href="https://play.google.com/store/apps/details?id=com.Gcenter.Monster.Shooter.Space.Invaders&pcampaignid=web_share" target="_blank" class="flex items-center bg-black hover:bg-gray-900 text-white py-3 px-6 rounded-xl border border-white/20 transition-all transform hover:scale-105">
+                        <i class="fab fa-google-play text-3xl mr-3"></i>
+                        <div class="text-left">
+                            <div class="text-xs">Get it on</div>
+                            <div class="text-xl font-bold">Google Play</div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Review 1 -->
+                    <div class="bg-black/50 p-4 rounded-xl border border-white/10">
+                        <div class="flex text-accent mb-2">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="text-sm text-gray-300 italic">"Best space shooter I've played in years. The graphics are amazing and gameplay is addictive!"</p>
+                    </div>
+
+                    <!-- Review 2 -->
+                    <div class="bg-black/50 p-4 rounded-xl border border-white/10">
+                        <div class="flex text-accent mb-2">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="text-sm text-gray-300 italic">"Love the ship upgrade system and the variety of monsters. Each level brings new challenges!"</p>
+                    </div>
+
+                    <!-- Review 3 -->
+                    <div class="bg-black/50 p-4 rounded-xl border border-white/10">
+                        <div class="flex text-accent mb-2">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="text-sm text-gray-300 italic">"Perfect for quick gaming sessions. Easy to learn but difficult to master. Highly recommended!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-20 bg-gradient-to-b from-black to-primary/20 relative">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-20 bg-primary/5"></div>
+            <div class="absolute bottom-0 right-0 w-full h-20 bg-secondary/5"></div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h2 class="game-title text-3xl md:text-5xl font-bold mb-4">JOIN THE <span class="text-accent">COMMUNITY</span></h2>
+                <p class="max-w-3xl mx-auto text-gray-300">Connect with other players and get the latest updates!</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-1 gap-6">
+
+                <!-- Social 2 -->
+                <a href="https://www.facebook.com/groups/345086777686319" target="_blank" class="bg-black/50 rounded-xl p-6 border border-accent/30 text-center transform transition-all hover:scale-105 hover:bg-accent/20">
+                    <i class="fab fa-facebook text-5xl text-accent mb-4"></i>
+                    <h3 class="game-title text-xl font-bold mb-2">Facebook</h3>
+                    <p class="text-sm text-gray-300">Follow our official page</p>
+                </a>
+
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black pt-16 pb-8 border-t border-primary/30 relative">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <a href="/" class="flex items-center space-x-3 mb-6 md:mb-0">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                        <i class="fas fa-rocket text-white text-xl transform -rotate-45"></i>
+                    </div>
+                    <span class="game-title text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-secondary to-accent">GALAXY DEFENDERS</span>
+                </a>
+
+                <nav class="flex flex-wrap justify-center gap-x-8 gap-y-2">
+                    <a href="#features" class="text-gray-300 hover:text-accent transition-colors">Features</a>
+                    <a href="#gameplay" class="text-gray-300 hover:text-accent transition-colors">Gameplay</a>
+                    <a href="#ships" class="text-gray-300 hover:text-accent transition-colors">Ships</a>
+                    <a href="#monsters" class="text-gray-300 hover:text-accent transition-colors">Monsters</a>
+                    <a href="#download" class="text-gray-300 hover:text-accent transition-colors">Download</a>
+                </nav>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-sm text-gray-500 mb-4 md:mb-0">© 2025 Galaxy Defenders. All rights reserved.</div>
+                <div class="flex space-x-6">
+                    <a href="/poliprivacy725/" class="text-sm text-gray-500 hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="/service2465/" class="text-sm text-gray-500 hover:text-white transition-colors">Terms of Use</a>
+                    <a href="/cookiess367/" class="text-sm text-gray-500 hover:text-white transition-colors">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const navbar = document.getElementById('navbar');
+            if (navbar.classList.contains('hidden')) {
+                navbar.classList.remove('hidden');
+            } else {
+                navbar.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
+<?php
+$cookieConsentHtml = '
+<style>
+.cookie-consent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: rgba(73, 29, 136, 0.9); /* Primary color with opacity */
+    backdrop-filter: blur(10px);
+    box-shadow: 0 -2px 15px rgba(73, 29, 136, 0.4); /* Shadow with primary color */
+    width: 100%;
+    transform: translateY(100%);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cookie-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    position: relative;
+    font-family: "Exo 2", sans-serif;
+}
+
+.cookie-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to right,
+        rgba(250, 68, 140, 0.1), /* Gradient with accent color */
+        rgba(67, 181, 160, 0.05) /* Gradient with secondary color */
+    );
+    pointer-events: none;
+}
+
+.cookie-content {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.cookie-title {
+    font-size: 1.2rem;
+    color: #ffffff; 
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-right: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: "Orbitron", sans-serif;
+}
+
+.cookie-title i {
+    color: #fa448c; /* Accent color for icon */
+    font-size: 1.5rem;
+}
+
+.cookie-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    margin: 0;
+    line-height: 1.5;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    font-family: "Exo 2", sans-serif;
+}
+
+.cookie-link {
+    color: #43b5a0; /* Secondary color for links */
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.cookie-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #43b5a0; /* Secondary color for underline */
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.cookie-link:hover::after {
+    transform: scaleX(1);
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.cookie-button-reject,
+.cookie-button-accept {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    font-family: "Orbitron", sans-serif;
+    border-radius: 0.75rem; /* Rounded corners matching site buttons */
+}
+
+.cookie-button-reject {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cookie-button-reject:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.cookie-button-accept {
+    background: #fa448c; /* Accent color */
+    color: #ffffff;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%); /* Hexagon shape matching site buttons */
+}
+
+.cookie-button-accept::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(67, 181, 160, 0.3), /* Secondary color for shine effect */
+        transparent
+    );
+    transition: all 0.6s;
+}
+
+.cookie-button-accept:hover {
+    background: rgba(250, 68, 140, 0.9); /* Lighter accent color on hover */
+    transform: translateY(-2px);
+}
+
+.cookie-button-accept:hover::before {
+    left: 100%;
+}
+
+@media (max-width: 768px) {
+    .cookie-container {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .cookie-content {
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .cookie-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .cookie-button-reject,
+    .cookie-button-accept {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .cookie-title {
+        margin-right: 0;
+        justify-content: center;
+    }
+}
+</style>
+<div id="cookieConsent" class="cookie-consent">
+    <div class="cookie-container">
+        <div class="cookie-content">
+            <h3 class="cookie-title">
+                <i class="fas fa-cookie-bite"></i>
+                Cookie Policy
+            </h3>
+            <p class="cookie-text ">
+                At Galaxy Defenders we use cookies to improve your gaming experience. By continuing to use our website, you accept our use of cookies. For more information, please read our
+                <a href="/poliprivacy725/" class="cookie-link">Privacy Policy</a>,
+                the
+                <a href="/service2465/" class="cookie-link">Terms of Service</a>
+                and the
+                <a href="/cookiess367/" class="cookie-link">Cookie Policy</a>.
+            </p>
+        </div>
+        
+        <div class="cookie-buttons">
+            <button id="rejectCookies" class="cookie-button-reject">
+                Decline
+            </button>
+            <button id="acceptCookies" class="cookie-button-accept">
+                Accept
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+   const cookieConsent = document.getElementById("cookieConsent");
+   const acceptBtn = document.getElementById("acceptCookies");
+   const rejectBtn = document.getElementById("rejectCookies");
+   
+   if (!getCookie("aprenderd_cookie_consent")) {
+       setTimeout(() => {
+           cookieConsent.style.transform = "translateY(0)";
+       }, 1000);
+   }
+
+   function getCookie(name) {
+       let matches = document.cookie.match(new RegExp(
+           "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"
+       ));
+       return matches ? decodeURIComponent(matches[1]) : undefined;
+   }
+   
+   function setCookie(name, value, days) {
+       const date = new Date();
+       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+       const expires = "; expires=" + date.toUTCString();
+       document.cookie = name + "=" + value + expires + "; path=/; SameSite=Strict; Secure";
+   }
+
+   function handleConsent(consent) {
+       setCookie("aprenderd_cookie_consent", consent, 365);
+       cookieConsent.style.transform = "translateY(100%)";
+       
+       setTimeout(() => {
+           cookieConsent.remove();
+       }, 500);
+   }
+
+   acceptBtn.addEventListener("click", () => handleConsent("accepted"));
+   rejectBtn.addEventListener("click", () => handleConsent("rejected"));
+});
+</script>
+';
+
+if (!isset($_COOKIE["aprenderd_cookie_consent"])) {
+    echo $cookieConsentHtml;
+}
+?>
