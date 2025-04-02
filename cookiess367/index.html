@@ -319,8 +319,6 @@
 </html>
 
 
-<?php
-$cookieConsentHtml = '
 <style>
 .cookie-consent {
     position: fixed;
@@ -583,9 +581,3 @@ document.addEventListener("DOMContentLoaded", function() {
    rejectBtn.addEventListener("click", () => handleConsent("rejected"));
 });
 </script>
-';
-
-if (!isset($_COOKIE["aprenderd_cookie_consent"])) {
-    echo $cookieConsentHtml;
-}
-?>
